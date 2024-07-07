@@ -42,4 +42,14 @@ public class InstructorController {
     public InstructorDTO deleteInstructorById(@PathVariable long instructorId){
         return instructorService.deleteByInstructorId(instructorId);
     }
+
+    @GetMapping("/details/{instructorDetailsId}")
+    public InstructorDTO getByInstructorDetailsId(@PathVariable long instructorDetailsId){
+        return instructorService.findByInstructorDetailsId(instructorDetailsId);
+    }
+
+    @DeleteMapping("/details/{instructorDetailsId}")
+    public InstructorDTO deleteByInstructorDetailsId(@PathVariable long instructorDetailsId){
+        return instructorService.deleteByInstructorDetailsId(instructorDetailsId);
+    }
 }

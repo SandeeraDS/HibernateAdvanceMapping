@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.ds.advance_mapping_1.bean.InstructorBean;
+import org.ds.advance_mapping_1.bean.InstructorDetailsBean;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,5 +36,15 @@ public class InstructorRepository {
     public void remove(InstructorBean instructorBean){
         entityManager.remove(instructorBean);
     }
+
+    public InstructorDetailsBean getByInstructorDetailsId(long instructorDetailsId){
+        return entityManager.find(InstructorDetailsBean.class,instructorDetailsId);
+    }
+
+    public void removeInstructorDetailsId(InstructorDetailsBean instructorDetailsBean){
+        entityManager.remove(instructorDetailsBean);
+    }
+
+
 
 }

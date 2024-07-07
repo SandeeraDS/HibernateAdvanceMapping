@@ -12,6 +12,7 @@ public class InstructorDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private long instructorDetailsId;
     private String youtubeChannel;
     private String hobby;
 }

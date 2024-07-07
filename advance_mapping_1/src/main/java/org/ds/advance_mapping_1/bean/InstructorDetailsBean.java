@@ -22,4 +22,6 @@ public class InstructorDetailsBean {
     private String youtubeChannel;
     @Column(name = "HOBBY")
     private String hobby;
+    @OneToOne(mappedBy = "instructorDetailsBean", cascade = CascadeType.ALL)
+    private InstructorBean instructorBean;
 }

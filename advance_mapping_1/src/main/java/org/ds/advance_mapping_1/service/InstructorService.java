@@ -134,4 +134,47 @@ public class InstructorService {
             throw new ClientException("invalid Instructor Id.");
         }
     }
+
+    public InstructorDTO findByInstructorDetailsId(long instructorDetailsId) {
+        if (instructorDetailsId > 0) {
+            InstructorDetailsBean instructorDetailsBean;
+            try {
+                instructorDetailsBean = instructorRepository.getByInstructorDetailsId(instructorDetailsId);
+            } catch (Exception e) {
+                throw new ServerException("Error occurred when getting instructor.");
+            }
+            if (instructorDetailsBean != null) {
+                return InstructorPopulator.populateInstructorDTO(instructorDetailsBean);
+            } else {
+                throw new ClientException("Instructor not found for given id.");
+            }
+        } else {
+            throw new ClientException("invalid Instructor Id.");
+        }
+    }
+
+    @Transactional
+    public InstructorDTO deleteByInstructorDetailsId(long instructorDetailsId) {
+        if (instructorDetailsId > 0) {
+            InstructorDetailsBean instructorDetailsBean;
+            try {
+                instructorDetailsBean = instructorRepository.getByInstructorDetailsId(instructorDetailsId);
+            } catch (Exception e) {
+                throw new ServerException("Error occurred when finding instructor.");
+            }
+            if (instructorDetailsBean != null) {
+                InstructorDTO instructorDTO = InstructorPopulator.populateInstructorDTO(instructorDetailsBean);
+                try {
+                    instructorRepository.removeInstructorDetailsId(instructorDetailsBean);
+                } catch (Exception e) {
+                    throw new ServerException("Error occurred when deleting instructor.");
+                }
+                return instructorDTO;
+            } else {
+                throw new ClientException("Instructor not found for given id.");
+            }
+        } else {
+            throw new ClientException("invalid Instructor Id.");
+        }
+    }
 }

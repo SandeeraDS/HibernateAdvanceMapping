@@ -13,6 +13,7 @@ public class InstructorPopulator {
         instructorDTO.setLastName(instructorBean.getLastName());
         instructorDTO.setEmail(instructorBean.getEmail());
         if(instructorBean.getInstructorDetailsBean() != null){
+            instructorDTO.setInstructorDetailsId(instructorBean.getInstructorDetailsBean().getId());
             instructorDTO.setYoutubeChannel(instructorBean.getInstructorDetailsBean().getYoutubeChannel());
             instructorDTO.setHobby(instructorBean.getInstructorDetailsBean().getHobby());
         }
@@ -36,6 +37,19 @@ public class InstructorPopulator {
             instructorBean.setInstructorDetailsBean(instructorDetailsBean);
         }
         return instructorBean;
+    }
+
+    public static InstructorDTO populateInstructorDTO(InstructorDetailsBean instructorDetailsBean) {
+        InstructorBean instructorBean = instructorDetailsBean.getInstructorBean();
+        InstructorDTO instructorDTO = new InstructorDTO();
+        instructorDTO.setId(instructorBean.getId());
+        instructorDTO.setFirstName(instructorBean.getFirstName());
+        instructorDTO.setLastName(instructorBean.getLastName());
+        instructorDTO.setEmail(instructorBean.getEmail());
+        instructorDTO.setInstructorDetailsId(instructorDetailsBean.getId());
+        instructorDTO.setYoutubeChannel(instructorDetailsBean.getYoutubeChannel());
+        instructorDTO.setHobby(instructorDetailsBean.getHobby());
+        return instructorDTO;
     }
 
 }
