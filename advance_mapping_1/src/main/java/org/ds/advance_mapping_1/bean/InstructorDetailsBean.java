@@ -22,6 +22,7 @@ public class InstructorDetailsBean {
     private String youtubeChannel;
     @Column(name = "HOBBY")
     private String hobby;
-    @OneToOne(mappedBy = "instructorDetailsBean", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "instructorDetailsBean",
+            cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private InstructorBean instructorBean;
 }

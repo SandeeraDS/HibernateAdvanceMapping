@@ -165,6 +165,10 @@ public class InstructorService {
             if (instructorDetailsBean != null) {
                 InstructorDTO instructorDTO = InstructorPopulator.populateInstructorDTO(instructorDetailsBean);
                 try {
+                    //Remove the associated object reference.
+                    //break bidirectional link
+                    instructorDetailsBean.getInstructorBean().setInstructorDetailsBean(null);
+
                     instructorRepository.removeInstructorDetailsId(instructorDetailsBean);
                 } catch (Exception e) {
                     throw new ServerException("Error occurred when deleting instructor.");
