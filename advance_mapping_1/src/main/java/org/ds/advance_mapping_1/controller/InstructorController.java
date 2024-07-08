@@ -1,5 +1,6 @@
 package org.ds.advance_mapping_1.controller;
 
+import org.ds.advance_mapping_1.dto.CourseDTO;
 import org.ds.advance_mapping_1.dto.InstructorDTO;
 import org.ds.advance_mapping_1.service.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,11 @@ public class InstructorController {
     @DeleteMapping("/details/{instructorDetailsId}")
     public InstructorDTO deleteByInstructorDetailsId(@PathVariable long instructorDetailsId){
         return instructorService.deleteByInstructorDetailsId(instructorDetailsId);
+    }
+
+
+    @PostMapping("/courses/{instructorId}")
+    public InstructorDTO addCourses(@PathVariable long instructorId, @RequestBody List<CourseDTO> courseDTOList) {
+        return instructorService.addCoursesToInstructor(instructorId, courseDTOList);
     }
 }

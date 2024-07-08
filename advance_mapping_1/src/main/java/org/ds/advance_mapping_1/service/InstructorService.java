@@ -3,8 +3,10 @@ package org.ds.advance_mapping_1.service;
 import jakarta.transaction.Transactional;
 import org.ds.advance_mapping_1.Exception.ClientException;
 import org.ds.advance_mapping_1.Exception.ServerException;
+import org.ds.advance_mapping_1.bean.CourseBean;
 import org.ds.advance_mapping_1.bean.InstructorBean;
 import org.ds.advance_mapping_1.bean.InstructorDetailsBean;
+import org.ds.advance_mapping_1.dto.CourseDTO;
 import org.ds.advance_mapping_1.dto.InstructorDTO;
 import org.ds.advance_mapping_1.repository.InstructorRepository;
 import org.ds.advance_mapping_1.utils.InstructorPopulator;
@@ -15,10 +17,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class InstructorService {
-    
+
     private final InstructorRepository instructorRepository;
-    
-    public InstructorService(InstructorRepository instructorRepository){
+
+    public InstructorService(InstructorRepository instructorRepository) {
         this.instructorRepository = instructorRepository;
     }
 
@@ -87,12 +89,12 @@ public class InstructorService {
             instructorBean.setFirstName(instructorDTO.getFirstName());
             instructorBean.setLastName(instructorDTO.getLastName());
             instructorBean.setEmail(instructorDTO.getEmail());
-            if(instructorBean.getInstructorDetailsBean() !=null){
+            if (instructorBean.getInstructorDetailsBean() != null) {
                 instructorBean.getInstructorDetailsBean().setYoutubeChannel(instructorDTO.getYoutubeChannel());
                 instructorBean.getInstructorDetailsBean().setHobby(instructorDTO.getHobby());
             } else {
-                if((instructorDTO.getYoutubeChannel()!= null && !instructorDTO.getYoutubeChannel().isBlank()) ||
-                        (instructorDTO.getHobby()!= null && !instructorDTO.getHobby().isBlank())){
+                if ((instructorDTO.getYoutubeChannel() != null && !instructorDTO.getYoutubeChannel().isBlank()) ||
+                        (instructorDTO.getHobby() != null && !instructorDTO.getHobby().isBlank())) {
                     InstructorDetailsBean instructorDetailsBean = new InstructorDetailsBean();
                     instructorDetailsBean.setYoutubeChannel(instructorDTO.getYoutubeChannel());
                     instructorDetailsBean.setHobby(instructorDTO.getHobby());
@@ -180,5 +182,29 @@ public class InstructorService {
         } else {
             throw new ClientException("invalid Instructor Id.");
         }
+    }
+
+    @Transactional
+    public InstructorDTO addCoursesToInstructor(long instructorId, List<CourseDTO> courseDTOList) {
+        if (instructorId <= 0) {
+            throw new ClientException("Invalid instructor id.");
+        }
+        if (courseDTOList == null || courseDTOList.isEmpty()) {
+            throw new ClientException("Empty Course List.");
+        }
+
+        InstructorBean instructorBean;
+        try {
+            instructorBean = instructorRepository.getById(instructorId);
+        } catch (Exception e) {
+            throw new ServerException("Error occurred when getting instructor.");
+        }
+
+        for (CourseDTO courseDTO : courseDTOList) {
+            instructorBean.add(new CourseBean(0, courseDTO.getTitle(), null));
+        }
+
+        instructorRepository.merge(instructorBean);
+        return InstructorPopulator.populateInstructorDTO(instructorBean);
     }
 }
