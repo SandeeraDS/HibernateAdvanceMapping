@@ -8,6 +8,7 @@ import org.ds.advance_mapping_1.bean.InstructorBean;
 import org.ds.advance_mapping_1.bean.InstructorDetailsBean;
 import org.ds.advance_mapping_1.dto.CourseDTO;
 import org.ds.advance_mapping_1.dto.InstructorDTO;
+import org.ds.advance_mapping_1.repository.CourseRepository;
 import org.ds.advance_mapping_1.repository.InstructorRepository;
 import org.ds.advance_mapping_1.utils.InstructorPopulator;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,11 @@ import java.util.stream.Collectors;
 public class InstructorService {
 
     private final InstructorRepository instructorRepository;
+    private final CourseRepository courseRepository;
 
-    public InstructorService(InstructorRepository instructorRepository) {
+    public InstructorService(InstructorRepository instructorRepository, CourseRepository courseRepository) {
         this.instructorRepository = instructorRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Transactional
@@ -124,6 +127,9 @@ public class InstructorService {
             if (instructorBean != null) {
                 InstructorDTO instructorDTO = InstructorPopulator.populateInstructorDTO(instructorBean);
                 try {
+                    for (CourseBean course : instructorBean.getCourseBeanList()) {
+                        course.setInstructorBean(null);
+                    }
                     instructorRepository.remove(instructorBean);
                 } catch (Exception e) {
                     throw new ServerException("Error occurred when deleting instructor.");
@@ -201,10 +207,43 @@ public class InstructorService {
         }
 
         for (CourseDTO courseDTO : courseDTOList) {
-            instructorBean.add(new CourseBean(0, courseDTO.getTitle(), null));
+            instructorBean.add(new CourseBean(0, courseDTO.getTitle(), null, null));
         }
 
         instructorRepository.merge(instructorBean);
+        return InstructorPopulator.populateInstructorDTO(instructorBean);
+    }
+
+    @Transactional
+    public InstructorDTO addCourseById(long instructorId, long courseId) {
+        if (instructorId <= 0) {
+            throw new ClientException("Invalid instructor id.");
+        }
+        if (courseId <= 0) {
+            throw new ClientException("Invalid course id.");
+        }
+
+        InstructorBean instructorBean;
+        try {
+            instructorBean = instructorRepository.getById(instructorId);
+        } catch (Exception e) {
+            throw new ServerException("Error occurred when getting instructor.");
+        }
+
+        CourseBean courseBean;
+        try {
+            courseBean = courseRepository.getById(courseId);
+        } catch (Exception e) {
+            throw new ServerException("Error occurred when getting course.");
+        }
+
+        try {
+            instructorBean.add(courseBean);
+            instructorRepository.merge(instructorBean);
+        } catch (Exception e) {
+            throw new ServerException("Error occurred when adding course to instructor");
+        }
+
         return InstructorPopulator.populateInstructorDTO(instructorBean);
     }
 }

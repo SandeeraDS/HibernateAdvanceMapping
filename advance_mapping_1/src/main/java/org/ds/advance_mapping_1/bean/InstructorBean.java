@@ -34,7 +34,8 @@ public class InstructorBean {
     @JoinColumn(name = "INSTRUCTOR_DETAIL_ID")
     private InstructorDetailsBean instructorDetailsBean;
 
-    @OneToMany(mappedBy = "instructorBean",
+    // default fetch type for the oneToMany also lazy. just mark
+    @OneToMany(mappedBy = "instructorBean", fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<CourseBean> courseBeanList;
 

@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "COURSE")
 @AllArgsConstructor
@@ -22,4 +25,15 @@ public class CourseBean {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "INSTRUCTOR_ID")
     private InstructorBean instructorBean;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "COURSE_ID")
+    private List<ReviewBean> reviewBeans;
+
+    public void addReview(ReviewBean reviewBean) {
+        if (reviewBeans == null) {
+            reviewBeans = new ArrayList<>();
+        }
+        reviewBean.setCourseId(this.id);
+        reviewBeans.add(reviewBean);
+    }
 }

@@ -55,8 +55,13 @@ public class InstructorController {
     }
 
 
-    @PostMapping("/courses/{instructorId}")
+    @PostMapping("/instructor_courses/{instructorId}")
     public InstructorDTO addCourses(@PathVariable long instructorId, @RequestBody List<CourseDTO> courseDTOList) {
         return instructorService.addCoursesToInstructor(instructorId, courseDTOList);
+    }
+
+    @PostMapping("/instructor_course/{instructorId}")
+    public InstructorDTO addCourseById(@PathVariable long instructorId, @RequestBody CourseDTO courseDTO) {
+        return instructorService.addCourseById(instructorId, courseDTO.getCourseId());
     }
 }
