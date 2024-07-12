@@ -207,7 +207,7 @@ public class InstructorService {
         }
 
         for (CourseDTO courseDTO : courseDTOList) {
-            instructorBean.add(new CourseBean(0, courseDTO.getTitle(), null, null));
+            instructorBean.add(new CourseBean(0, courseDTO.getTitle(), null, null, null));
         }
 
         instructorRepository.merge(instructorBean);

@@ -4,13 +4,14 @@ import jakarta.transaction.Transactional;
 import org.ds.advance_mapping_1.Exception.ClientException;
 import org.ds.advance_mapping_1.Exception.ServerException;
 import org.ds.advance_mapping_1.bean.CourseBean;
-import org.ds.advance_mapping_1.bean.InstructorBean;
 import org.ds.advance_mapping_1.bean.ReviewBean;
+import org.ds.advance_mapping_1.bean.StudentBean;
 import org.ds.advance_mapping_1.dto.CourseDTO;
-
 import org.ds.advance_mapping_1.dto.ReviewDTO;
+import org.ds.advance_mapping_1.dto.StudentDTO;
 import org.ds.advance_mapping_1.repository.CourseRepository;
 import org.ds.advance_mapping_1.utils.CoursePopulator;
+import org.ds.advance_mapping_1.utils.StudentPopulator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -116,10 +117,64 @@ public class CourseService {
                 try {
                     courseRepository.delete(courseBean);
                     return CoursePopulator.populateCourseDTO(courseBean);
-                } catch (Exception e){
+                } catch (Exception e) {
                     throw new ClientException("Error occurred when removing course.");
                 }
 
+            } else {
+                throw new ClientException("Course not found for given id.");
+            }
+        } else {
+            throw new ClientException("invalid Course Id.");
+        }
+    }
+
+    @Transactional
+    public CourseDTO addStudentByCourseId(long courseId, StudentDTO studentDTO) {
+
+        if (courseId > 0) {
+            if (studentDTO == null || studentDTO.getFirstName() == null || studentDTO.getFirstName().isBlank()
+                    || studentDTO.getLastName() == null || studentDTO.getLastName().isBlank()
+                    || studentDTO.getEmail() == null || studentDTO.getEmail().isBlank()) {
+                throw new ClientException("invalid input data.");
+            }
+
+            CourseBean courseBean;
+            try {
+                courseBean = courseRepository.getById(courseId);
+            } catch (Exception e) {
+                throw new ServerException("Error occurred when getting course.");
+            }
+
+            if (courseBean == null) {
+                throw new ServerException("Course not found for given id.");
+            }
+
+            StudentBean studentBean = StudentPopulator.populateStudentBean(studentDTO, false);
+            courseBean.addStudent(studentBean);
+
+            try {
+                courseRepository.merge(courseBean);
+            } catch (Exception e) {
+                throw new ServerException("Error occurred when saving course with student.");
+            }
+            return CoursePopulator.populateCourseDTO(courseBean);
+        } else {
+            throw new ClientException("invalid Course Id.");
+        }
+    }
+
+    @Transactional
+    public CourseDTO findCourseAndStudentByCourseId(long id) {
+        if (id > 0) {
+            CourseBean courseBean;
+            try {
+                courseBean = courseRepository.findCourseAndStudentsByCourseId(id);
+            } catch (Exception e) {
+                throw new ServerException("Error occurred when getting course.");
+            }
+            if (courseBean != null) {
+                return CoursePopulator.populateCourseDTO(courseBean);
             } else {
                 throw new ClientException("Course not found for given id.");
             }

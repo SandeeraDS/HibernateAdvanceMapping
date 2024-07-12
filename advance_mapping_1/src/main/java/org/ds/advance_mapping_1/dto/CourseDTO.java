@@ -14,4 +14,5 @@ public class CourseDTO {
     private long courseId;
     private String title;
     private List<ReviewDTO> reviewDTOS;
+    private List<StudentDTO> studentDTOS;
 }

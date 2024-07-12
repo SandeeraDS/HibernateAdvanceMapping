@@ -25,7 +25,7 @@ public class InstructorPopulator {
         List<CourseDTO> courseDTOList = new ArrayList<>();
         if (instructorBean.getCourseBeanList() != null) {
             for (CourseBean courseBean : instructorBean.getCourseBeanList()) {
-                courseDTOList.add(new CourseDTO(courseBean.getId(), courseBean.getTitle(),null));
+                courseDTOList.add(new CourseDTO(courseBean.getId(), courseBean.getTitle(),null,null));
             }
         }
         instructorDTO.setCourseDTOList(courseDTOList);

@@ -33,4 +33,10 @@ public class CourseRepository {
     public void delete(CourseBean courseBean) {
         entityManager.remove(courseBean);
     }
+
+    public CourseBean findCourseAndStudentsByCourseId(long courseId) {
+        TypedQuery<CourseBean> query = entityManager.createQuery("select c from CourseBean c join fetch c.studentBeanList where c.id = :id", CourseBean.class);
+        query.setParameter("id", courseId);
+        return query.getSingleResult();
+    }
 }

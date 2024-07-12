@@ -1,9 +1,8 @@
 package org.ds.advance_mapping_1.controller;
 
 import org.ds.advance_mapping_1.dto.CourseDTO;
-import org.ds.advance_mapping_1.dto.InstructorDTO;
 import org.ds.advance_mapping_1.dto.ReviewDTO;
-import org.ds.advance_mapping_1.service.CourseService;
+import org.ds.advance_mapping_1.dto.StudentDTO;
 import org.ds.advance_mapping_1.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,4 +43,15 @@ public class CourseController {
     public CourseDTO deleteCourseById(@PathVariable long courseId){
         return courseService.deleteCourseById(courseId);
     }
+
+    @PostMapping("/Student/{courseId}")
+    public CourseDTO addStudent(@PathVariable long courseId,  @RequestBody StudentDTO studentDTO) {
+        return courseService.addStudentByCourseId(courseId,studentDTO);
+    }
+
+    @GetMapping("/CourseStudent/{courseId}")
+    public CourseDTO getCourseAndStudentByCourseId(@PathVariable long courseId){
+        return courseService.findCourseAndStudentByCourseId(courseId);
+    }
+
 }

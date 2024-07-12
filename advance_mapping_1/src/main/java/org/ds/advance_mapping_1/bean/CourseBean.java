@@ -25,9 +25,14 @@ public class CourseBean {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "INSTRUCTOR_ID")
     private InstructorBean instructorBean;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "COURSE_ID")
     private List<ReviewBean> reviewBeans;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(name = "COURSE_STUDENT",
+            joinColumns = @JoinColumn(name = "COURSE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "STUDENT_ID"))
+    private List<StudentBean> studentBeanList;
 
     public void addReview(ReviewBean reviewBean) {
         if (reviewBeans == null) {
@@ -35,5 +40,12 @@ public class CourseBean {
         }
         reviewBean.setCourseId(this.id);
         reviewBeans.add(reviewBean);
+    }
+
+    public void addStudent(StudentBean studentBean) {
+        if (studentBeanList == null) {
+            studentBeanList = new ArrayList<>();
+        }
+        studentBeanList.add(studentBean);
     }
 }
